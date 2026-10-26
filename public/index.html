@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>我的連結收藏</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#eef1f4;--surface:#fff;--ink:#14202b;--muted:#5d6b78;--line:#d5dce3;--accent:#2f5bff;--accent-ink:#fff;--chip:#e2e8ee}
+@media (prefers-color-scheme:dark){:root{--bg:#10151b;--surface:#18202a;--ink:#e8eef4;--muted:#93a1ae;--line:#2a3541;--accent:#7a97ff;--accent-ink:#10151b;--chip:#222c38}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 "Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+h1{font-size:24px;margin:0;font-weight:700;letter-spacing:.02em}
+.sub{color:var(--muted);font-size:13px}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px}
+button:disabled{opacity:.6;cursor:wait}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--accent-ink);padding:9px 16px;font-weight:500}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:20px;display:none}
+.panel.open{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=url]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.field{margin-bottom:12px}
+.hint{font-size:12px;color:var(--muted);margin-top:4px}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sugg button,.chip{background:var(--chip);color:var(--ink);padding:3px 10px;font-size:13px;border-radius:99px}
+.thumbpick{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.thumbpick img{width:72px;height:54px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.layout{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start}
+nav.tags{position:sticky;top:12px;display:flex;flex-direction:column;gap:2px}
+nav.tags button{display:flex;justify-content:space-between;align-items:center;background:transparent;color:var(--ink);padding:7px 10px;text-align:left;border-radius:8px}
+nav.tags button span{color:var(--muted);font-size:12px}
+nav.tags button:hover{background:var(--chip)}
+nav.tags button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+nav.tags button[aria-pressed=true] span{color:inherit;opacity:.7}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.thumb{position:relative;aspect-ratio:16/10;display:block;color:#fff;font-weight:700;font-size:44px;overflow:hidden;text-decoration:none}
+.thumb .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body a.t{color:var(--ink);font-weight:500;text-decoration:none;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.body a.t:hover{text-decoration:underline}
+.dom{font-size:12px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.chip:hover{background:var(--accent);color:var(--accent-ink)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px}
+.del{background:transparent;color:var(--muted);font-size:12px;padding:2px 6px;margin-left:-6px}
+.del:hover{color:#d33}
+.date{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:48px 0}
+@media(max-width:720px){
+.layout{grid-template-columns:1fr}
+nav.tags{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:6px}
+nav.tags button{white-space:nowrap;gap:6px;background:var(--chip)}
+.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>我的連結收藏</h1><div class="sub" id="count">載入中…</div></div>
+  <button class="btn" id="toggle" aria-expanded="false">新增連結</button>
+</header>
+
+<section class="panel" id="panel">
+  <div class="grid2">
+    <div class="field"><label for="url">連結網址</label><input type="url" id="url" placeholder="https://"></div>
+    <div class="field"><label for="title">標題（可留空）</label><input type="text" id="title" placeholder="留空會自動抓取網頁標題"></div>
+  </div>
+  <div class="field"><label for="tags">標籤</label><input type="text" id="tags" placeholder="用逗號分隔，例如：設計, 工具, 待讀">
+    <div class="sugg" id="sugg"></div></div>
+  <div class="field"><label>縮圖（可留空）</label>
+    <div class="thumbpick"><img id="prev" alt="" hidden><input type="file" id="file" accept="image/*">
+    <button class="btn ghost" id="clr" hidden>移除圖片</button></div>
+    <div class="hint">留空會自動抓取網頁縮圖；抓不到時顯示色塊，也可以在這裡上傳圖片。</div></div>
+  <div class="actions"><button class="btn ghost" id="cancel">取消</button><button class="btn" id="save">儲存</button></div>
+</section>
+
+<div class="layout">
+  <nav class="tags" id="nav" aria-label="標籤篩選"></nav>
+  <main><div class="cards" id="cards"></div></main>
+</div>
+</div>
+
+<script>
+var links=[],active=null,img=null,busy=false;
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function api(path,opt){return fetch(path,opt).then(function(r){return r.json().catch(function(){return{}}).then(function(d){if(!r.ok)throw new Error(d.error||"請求失敗（"+r.status+"）");return d})})}
+function dom(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return u}}
+function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function fmt(t){var d=new Date(t),p=function(n){return String(n).padStart(2,"0")};return d.getFullYear()+"/"+p(d.getMonth()+1)+"/"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes())}
+function parseTags(s){var o=[];s.split(/[,，、\s]+/).forEach(function(x){x=x.trim();if(x&&o.indexOf(x)<0)o.push(x)});return o}
+function allTags(){var m={};links.forEach(function(l){l.tags.forEach(function(t){m[t]=(m[t]||0)+1})});return m}
+function thumb(l){var d=dom(l.url),h=hue(d);
+  return '<span class="ph" style="background:linear-gradient(135deg,hsl('+h+',55%,46%),hsl('+((h+40)%360)+',60%,34%))">'+esc(d.charAt(0).toUpperCase())+'</span>'
+   +(l.image?'<img src="'+esc(l.image)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':'')}
+function render(){
+  var m=allTags(),names=Object.keys(m).sort(function(a,b){return m[b]-m[a]||a.localeCompare(b)});
+  if(active&&!m[active])active=null;
+  var nav='<button aria-pressed="'+(active===null)+'" data-t="">全部<span>'+links.length+'</span></button>';
+  names.forEach(function(t){nav+='<button aria-pressed="'+(active===t)+'" data-t="'+esc(t)+'">'+esc(t)+'<span>'+m[t]+'</span></button>'});
+  $("nav").innerHTML=nav;
+  var list=links.filter(function(l){return!active||l.tags.indexOf(active)>=0}).sort(function(a,b){return b.t-a.t});
+  $("count").textContent=active?"標籤「"+active+"」共 "+list.length+" 則":"共 "+links.length+" 則連結";
+  var h="";
+  list.forEach(function(l){
+    h+='<article class="card"><a class="thumb" href="'+esc(l.url)+'" target="_blank" rel="noopener" aria-label="開啟連結">'+thumb(l)+'</a><div class="body">'
+     +'<a class="t" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.title)+'</a><div class="dom">'+esc(dom(l.url))+'</div><div class="row">';
+    l.tags.forEach(function(t){h+='<button class="chip" data-t="'+esc(t)+'">'+esc(t)+'</button>'});
+    h+='</div><div class="foot"><button class="del" data-del="'+l.id+'">刪除</button><time class="date" datetime="'+new Date(l.t).toISOString()+'">'+fmt(l.t)+'</time></div></div></article>'});
+  $("cards").innerHTML=h||'<div class="empty">這個標籤下還沒有連結。按右上角「新增連結」開始收藏。</div>';
+  var s="";Object.keys(m).forEach(function(t){s+='<button type="button" data-add="'+esc(t)+'">'+esc(t)+'</button>'});
+  $("sugg").innerHTML=s}
+function setPanel(o){$("panel").classList.toggle("open",o);$("toggle").setAttribute("aria-expanded",o);if(o)$("url").focus()}
+function resetForm(){["url","title","tags"].forEach(function(i){$(i).value=""});$("file").value="";img=null;$("prev").hidden=true;$("clr").hidden=true}
+$("toggle").onclick=function(){setPanel(!$("panel").classList.contains("open"))};
+$("cancel").onclick=function(){resetForm();setPanel(false)};
+$("clr").onclick=function(){img=null;$("file").value="";$("prev").hidden=true;$("clr").hidden=true};
+$("file").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){var w=Math.min(480,im.width),k=w/im.width,c=document.createElement("canvas");
+    c.width=w;c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    img=c.toDataURL("image/jpeg",.8);$("prev").src=img;$("prev").hidden=false;$("clr").hidden=false};im.src=r.result};r.readAsDataURL(f)};
+$("sugg").onclick=function(e){var t=e.target.getAttribute("data-add");if(!t)return;var cur=parseTags($("tags").value);if(cur.indexOf(t)<0)cur.push(t);$("tags").value=cur.join(", ")};
+$("save").onclick=function(){var u=$("url").value.trim();if(!u){$("url").focus();return}if(busy)return;
+  busy=true;$("save").disabled=true;$("save").textContent="儲存中…";
+  api("/api/links",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({url:u,title:$("title").value.trim(),tags:parseTags($("tags").value),image:img})})
+  .then(function(l){links.unshift(l);resetForm();setPanel(false);render()})
+  .catch(function(e){alert(e.message)})
+  .then(function(){busy=false;$("save").disabled=false;$("save").textContent="儲存"})};
+document.addEventListener("click",function(e){var b=e.target.closest("[data-t]");
+  if(b&&(b.closest("#nav")||b.classList.contains("chip"))){active=b.getAttribute("data-t")||null;render();window.scrollTo({top:0,behavior:"smooth"});return}
+  var d=e.target.closest("[data-del]");
+  if(d&&confirm("確定刪除這則連結？")){var id=+d.getAttribute("data-del");
+    api("/api/links/"+id,{method:"DELETE"}).then(function(){links=links.filter(function(l){return l.id!==id});render()}).catch(function(e){alert(e.message)})}});
+api("/api/links").then(function(d){links=d;render()}).catch(function(e){$("count").textContent="";$("cards").innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+// 書籤／捷徑可用 /?url=網址&title=標題 直接帶入新增表單
+var q=new URLSearchParams(location.search);
+if(q.get("url")){setPanel(true);$("url").value=q.get("url");if(q.get("title"))$("title").value=q.get("title");$("tags").focus();history.replaceState(null,"","/")}
+</script>
+</body>
+</html>

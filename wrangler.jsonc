@@ -1,0 +1,13 @@
+{
+  "name": "link-board",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "link-board",
+      "database_id": "fb25f19b-f645-4a90-bbc6-3a03c89cde02"
+    }
+  ]
+}
