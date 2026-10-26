@@ -12,3 +12,4 @@ CREATE TABLE IF NOT EXISTS link_tags (
 );
 CREATE INDEX IF NOT EXISTS idx_tag ON link_tags (tag);
 CREATE INDEX IF NOT EXISTS idx_created ON links (created_at DESC);
+
